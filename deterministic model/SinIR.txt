@@ -1,0 +1,32 @@
+function dx=SinIR(t,x,ap,gr)
+parameters:
+vi=24.98;vr=40;vl=80.2;vi0=0;vl0=0;
+kdr=0.3;kdi=0.3;kudr=39.7;kudi=214.7;
+kb1=0.32;kb2=0.32; Ki=0.4;Kl=0.5;kdlr=1.1661;
+kdeg=gr+0.2; kdegl=gr+0.8; apd= (13+4*ap-13^0.5*(13 + 8 *ap)^0.5)*125/2.^(0.95*(1.1 - gr));
+vt=50;Kt=5;
+reactions:
+->I     |   (vi0+vi*(apd)/(Ki+apd))*fglobal(gr,0.8)*400/8.3;
+->R		|	vr*fglobal(gr,0.8)*200/8.3;
+->L     |   (vl0+ vl*Kl/(Rt+Kl))*fglobal(gr,0.3)*200/8.3;
+
+->T     |   vt*Kt/(Rt+Kt)*fglobal(gr,0.4)*200/8.3;
+Id+R->2*IR | kb1*Id*R
+
+2*R -> Rt | kdr*R*R
+Rt -> 2*R| kudr*Rt
+
+2*I -> Id | kdi*I*I
+Id  ->2*I| kudi*Id
+
+L+R->LR | kb2*L*R
+LR-> L+R  | kdlr*LR
+I->|kdeg*I
+Id->|kdeg*Id
+R->|kdeg*R
+Rt->|kdeg*Rt
+IR->|kdeg*IR
+LR->|kdeg*LR
+L->|kdegl*L
+T->|1*T
+##############
